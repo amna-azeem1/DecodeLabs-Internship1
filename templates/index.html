@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cognix - Rule-Based Chatbot</title>
+<style>
+    :root {
+        --bg: #0f1117;
+        --panel: #1a1d27;
+        --panel-2: #22262f;
+        --text: #e5e7eb;
+        --text-dim: #9ca3af;
+        --accent: #3B82F6;
+        --accent-hover: #2f6fd6;
+        --bubble-user: #3B82F6;
+        --bubble-bot: #22262f;
+        --border: #2b2f3a;
+    }
+
+    [data-theme="light"] {
+        --bg: #f5f7fb;
+        --panel: #ffffff;
+        --panel-2: #eef1f6;
+        --text: #1f2430;
+        --text-dim: #6b7280;
+        --accent: #3B82F6;
+        --accent-hover: #2f6fd6;
+        --bubble-user: #3B82F6;
+        --bubble-bot: #e9ecf3;
+        --border: #dde1ea;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        overflow: hidden;
+        transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .app {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: var(--panel);
+    }
+
+    .chat-area {
+        max-width: 900px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .input-area {
+        max-width: 900px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        position: relative;
+    }
+    .header-titles h1 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--accent);
+    }
+    .header-titles p {
+        margin: 2px 0 0;
+        font-size: 12px;
+        color: var(--text-dim);
+    }
+    .menu-btn {
+        background: none;
+        border: none;
+        color: var(--text);
+        font-size: 22px;
+        cursor: pointer;
+        padding: 4px 10px;
+        border-radius: 8px;
+    }
+    .menu-btn:hover { background: var(--panel-2); }
+
+    .dropdown {
+        position: absolute;
+        top: 55px;
+        right: 20px;
+        background: var(--panel-2);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        width: 180px;
+        overflow: hidden;
+        display: none;
+        z-index: 10;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    .dropdown.show { display: block; }
+    .dropdown button {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 10px 14px;
+        background: none;
+        border: none;
+        color: var(--text);
+        font-size: 14px;
+        cursor: pointer;
+    }
+    .dropdown button:hover { background: var(--border); }
+
+    /* Chat area */
+    .chat-area {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .welcome {
+        margin: auto;
+        text-align: center;
+        color: var(--text-dim);
+        padding: 20px;
+    }
+    .welcome .emoji { font-size: 42px; }
+    .welcome h2 {
+        color: var(--text);
+        margin: 10px 0 6px;
+        font-size: 22px;
+    }
+    .welcome p {
+        font-size: 14px;
+        max-width: 380px;
+        margin: 0 auto 20px;
+    }
+    .suggestions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+    }
+    .suggestion-btn {
+        background: var(--panel-2);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 10px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+    .suggestion-btn:hover {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+    }
+
+    .message-row {
+        display: flex;
+        flex-direction: column;
+        margin: 8px 0;
+        animation: fadeIn 0.3s ease;
+        max-width: 78%;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .message-row.user { align-self: flex-end; align-items: flex-end; }
+    .message-row.bot { align-self: flex-start; align-items: flex-start; }
+
+    .bubble {
+        padding: 12px 16px;
+        border-radius: 14px;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+    .message-row.user .bubble {
+        background: var(--bubble-user);
+        color: white;
+        border-bottom-right-radius: 4px;
+    }
+    .message-row.bot .bubble {
+        background: var(--bubble-bot);
+        color: var(--text);
+        border-bottom-left-radius: 4px;
+    }
+    .timestamp {
+        font-size: 11px;
+        color: var(--text-dim);
+        margin-top: 4px;
+        padding: 0 4px;
+    }
+
+    .typing {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        font-size: 13px;
+        color: var(--text-dim);
+        padding: 6px 4px;
+    }
+    .dot {
+        width: 6px;
+        height: 6px;
+        background: var(--text-dim);
+        border-radius: 50%;
+        animation: blink 1.2s infinite;
+    }
+    .dot:nth-child(2) { animation-delay: 0.2s; }
+    .dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes blink {
+        0%, 80%, 100% { opacity: 0.2; }
+        40% { opacity: 1; }
+    }
+
+    /* Input area */
+    .input-area {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 16px;
+        border-top: 1px solid var(--border);
+    }
+    #userInput {
+        flex: 1;
+        padding: 12px 16px;
+        border-radius: 24px;
+        border: 1px solid var(--border);
+        background: var(--panel-2);
+        color: var(--text);
+        outline: none;
+        font-size: 14px;
+    }
+    #sendBtn {
+        background: var(--accent);
+        border: none;
+        color: white;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        transition: background 0.2s;
+    }
+    #sendBtn:hover { background: var(--accent-hover); }
+    #userInput:disabled, #sendBtn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    footer {
+        text-align: center;
+        font-size: 11px;
+        color: var(--text-dim);
+        padding: 8px 0 12px;
+    }
+
+    .chat-area::-webkit-scrollbar { width: 6px; }
+    .chat-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body data-theme="dark">
+
+<div class="app">
+    <header>
+        <div class="header-titles">
+            <h1>Cognix</h1>
+            <p>A Rule-Based Chatbot</p>
+        </div>
+        <button class="menu-btn" id="menuBtn">&#8942;</button>
+        <div class="dropdown" id="dropdown">
+            <button id="newChatBtn">New Chat</button>
+            <button id="clearChatBtn">Clear Chat</button>
+            <button id="aboutBtn">About</button>
+            <button id="helpBtn">Help</button>
+            <button id="themeBtn">Toggle Light/Dark Theme</button>
+            <button id="exitBtn">Exit</button>
+        </div>
+    </header>
+
+    <div class="chat-area" id="chatArea">
+        <div class="welcome" id="welcomeScreen">
+            <div class="emoji">&#129302;</div>
+            <h2>Welcome to Cognix</h2>
+            <p>A professional rule-based chatbot that answers predefined questions using keyword matching.</p>
+            <div class="suggestions">
+                <button class="suggestion-btn" data-msg="hello?">hello?</button>
+                <button class="suggestion-btn" data-msg="What is Python?">What is Python?</button>
+                <button class="suggestion-btn" data-msg="Who are you?">Who are you?</button>
+                <button class="suggestion-btn" data-msg="AI">AI</button>
+                <button class="suggestion-btn" data-msg="tell me a joke">tell me a joke</button>
+                <button class="suggestion-btn" data-msg="what can you do?">what can you do?</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Type your message..." autofocus>
+        <button id="sendBtn" title="Send">&#9658;</button>
+    </div>
+
+    <footer>&copy; Cognix | Rule-Based Chatbot Project</footer>
+</div>
+
+<script>
+const chatArea = document.getElementById("chatArea");
+const userInput = document.getElementById("userInput");
+const sendBtn = document.getElementById("sendBtn");
+const welcomeScreen = document.getElementById("welcomeScreen");
+const menuBtn = document.getElementById("menuBtn");
+const dropdown = document.getElementById("dropdown");
+
+// ---- Menu toggle ----
+menuBtn.addEventListener("click", () => dropdown.classList.toggle("show"));
+document.addEventListener("click", (e) => {
+    if (!menuBtn.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove("show");
+    }
+});
+
+// ---- Menu actions ----
+document.getElementById("newChatBtn").addEventListener("click", () => {
+    clearChat();
+    dropdown.classList.remove("show");
+});
+document.getElementById("clearChatBtn").addEventListener("click", () => {
+    clearChat();
+    dropdown.classList.remove("show");
+});
+document.getElementById("aboutBtn").addEventListener("click", () => {
+    alert("Cognix is a rule-based chatbot built for an educational semester project. It uses predefined responses and keyword matching only \u2014 no AI, ML, or NLP models.");
+    dropdown.classList.remove("show");
+});
+document.getElementById("helpBtn").addEventListener("click", () => {
+    alert("Type a message or tap a suggestion to chat with Cognix. Try asking about AI, Python, HTML, CSS, JavaScript, or ask for motivation!");
+    dropdown.classList.remove("show");
+});
+document.getElementById("themeBtn").addEventListener("click", () => {
+    const body = document.body;
+    const current = body.getAttribute("data-theme");
+    body.setAttribute("data-theme", current === "dark" ? "light" : "dark");
+    dropdown.classList.remove("show");
+});
+document.getElementById("exitBtn").addEventListener("click", () => {
+    if (confirm("Close Cognix?")) window.close();
+    dropdown.classList.remove("show");
+});
+
+function clearChat() {
+    chatArea.innerHTML = "";
+    chatArea.appendChild(welcomeScreen);
+    welcomeScreen.style.display = "flex";
+    welcomeScreen.style.flexDirection = "column";
+    welcomeScreen.style.alignItems = "center";
+    endChatUI(false);
+}
+
+function endChatUI(shouldEnd) {
+    // Mirrors the console version's "break": once the user says bye,
+    // the input is disabled and the conversation is over until New Chat.
+    userInput.disabled = shouldEnd;
+    sendBtn.disabled = shouldEnd;
+    userInput.placeholder = shouldEnd
+        ? "Chat ended \u2014 click New Chat to start again"
+        : "Type your message...";
+}
+
+// ---- Suggestions ----
+document.querySelectorAll(".suggestion-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        sendMessage(btn.getAttribute("data-msg"));
+    });
+});
+
+function getTimestamp() {
+    const now = new Date();
+    let hours = now.getHours();
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12;
+    return `${hours}:${minutes} ${ampm}`;
+}
+
+function addMessage(text, sender) {
+    const row = document.createElement("div");
+    row.className = "message-row " + sender;
+
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.textContent = text;
+
+    const time = document.createElement("div");
+    time.className = "timestamp";
+    time.textContent = getTimestamp();
+
+    row.appendChild(bubble);
+    row.appendChild(time);
+    chatArea.appendChild(row);
+    chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function showTyping() {
+    const row = document.createElement("div");
+    row.className = "message-row bot";
+    row.id = "typingRow";
+    row.innerHTML = `<div class="typing">Cognix is typing
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span></div>`;
+    chatArea.appendChild(row);
+    chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function removeTyping() {
+    const row = document.getElementById("typingRow");
+    if (row) row.remove();
+}
+
+async function sendMessage(overrideText) {
+    const text = (overrideText !== undefined ? overrideText : userInput.value).trim();
+    if (text === "") return;
+
+    if (welcomeScreen.parentNode) {
+        welcomeScreen.remove();
+    }
+
+    addMessage(text, "user");
+    userInput.value = "";
+    showTyping();
+
+    try {
+        const response = await fetch("/get_response", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: text })
+        });
+        const data = await response.json();
+
+        setTimeout(() => {
+            removeTyping();
+            addMessage(data.reply, "bot");
+            if (data.end_chat) {
+                endChatUI(true);
+            }
+        }, 500);
+    } catch (err) {
+        removeTyping();
+        addMessage("Sorry, something went wrong connecting to Cognix.", "bot");
+    }
+}
+
+sendBtn.addEventListener("click", () => sendMessage());
+userInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") sendMessage();
+});
+</script>
+
+</body>
+</html>
