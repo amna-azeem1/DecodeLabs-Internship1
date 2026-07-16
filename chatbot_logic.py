@@ -9,7 +9,7 @@ INTENTS = {
         "response": "I'm great, thanks for asking!"
     },
     "who_are_you": {
-        "keywords": ["who are you"],
+        "keywords": ["who are you","tell me about yourself"],
         "response": "I am Cognix, a rule-based chatbot designed to answer predefined questions and provide basic information."
     },
     "joke":{
