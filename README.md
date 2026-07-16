@@ -11,7 +11,7 @@ no AI APIs, machine learning, or NLP models are involved.
 - **Fallback Mechanism** : provides fallback responses when input does not match with predefined keywords.
 - **10+ intents**: greetings, chatbot identity, capabilities, AI, Machine Learning, Python,
   HTML, CSS, JavaScript, motivation, and more.
-- **ChatGPT-style web interface**: built with Flask (backend) + HTML/CSS/JS (frontend).
+- **web interface**: built with Flask (backend) + HTML/CSS/JS (frontend).
 - **Dark & light theme toggle**
 - **Welcome screen** with clickable suggestion prompts
 - **Typing indicator** ("Cognix is typing...") and message timestamps
