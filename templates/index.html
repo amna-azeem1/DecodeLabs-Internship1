@@ -5,31 +5,41 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cognix - Rule-Based Chatbot</title>
 <style>
-    :root {
-        --bg: #0f1117;
-        --panel: #1a1d27;
-        --panel-2: #22262f;
-        --text: #e5e7eb;
-        --text-dim: #9ca3af;
-        --accent: #3B82F6;
-        --accent-hover: #2f6fd6;
-        --bubble-user: #3B82F6;
-        --bubble-bot: #22262f;
-        --border: #2b2f3a;
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-    [data-theme="light"] {
-        --bg: #f5f7fb;
-        --panel: #ffffff;
-        --panel-2: #eef1f6;
-        --text: #1f2430;
-        --text-dim: #6b7280;
-        --accent: #3B82F6;
-        --accent-hover: #2f6fd6;
-        --bubble-user: #3B82F6;
-        --bubble-bot: #e9ecf3;
-        --border: #dde1ea;
-    }
+    :root {
+    --bg: #0F172A;
+    --panel: #111827;
+    --panel-2: #1E293B;
+
+    --text: #F8FAFC;
+    --text-dim: #94A3B8;
+
+    --accent: #2563EB;
+    --accent-hover: #1D4ED8;
+
+    --bubble-user: #2563EB;
+    --bubble-bot: #1E293B;
+
+    --border: #334155;
+}
+
+[data-theme="light"] {
+    --bg: #F8FAFC;
+    --panel: #FFFFFF;
+    --panel-2: #F1F5F9;
+
+    --text: #0F172A;
+    --text-dim: #64748B;
+
+    --accent: #2563EB;
+    --accent-hover: #1D4ED8;
+
+    --bubble-user: #2563EB;
+    --bubble-bot: #E2E8F0;
+
+    --border: #CBD5E1;
+}
 
     * { box-sizing: border-box; }
 
@@ -41,7 +51,7 @@
     }
 
     body {
-        font-family: 'Segoe UI', Arial, sans-serif;
+        font-family: 'Poppins', sans-serif;
         background: var(--bg);
         color: var(--text);
         height: 100vh;
@@ -76,26 +86,48 @@
         margin: 0 auto;
     }
 
-    /* Header */
-    header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 16px 20px;
-        border-bottom: 1px solid var(--border);
-        position: relative;
-    }
-    .header-titles h1 {
-        margin: 0;
-        font-size: 20px;
-        font-weight: 600;
-        color: var(--accent);
-    }
-    .header-titles p {
-        margin: 2px 0 0;
-        font-size: 12px;
-        color: var(--text-dim);
-    }
+ header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 18px 22px;
+
+    background: var(--panel);
+
+    border: none;
+    box-shadow: none;
+
+    position: relative;
+}
+
+
+.header-titles h1 {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin-left: 20px;
+    margin-bottom: 2px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #FFFFFF;
+    letter-spacing: 0.5px;
+}
+
+.header-titles h1 svg {
+    width: 38px;
+    height: 38px;
+    color: #3B82F6;
+
+}
+
+.header-titles p {
+    margin: 0;
+    margin-left: 20px;
+    font-size: 13px;
+    font-weight: 400;
+    color: #CBD5E1;
+}
     .menu-btn {
         background: none;
         border: none;
@@ -172,7 +204,8 @@
         color: var(--text);
         padding: 10px 14px;
         border-radius: 20px;
-        font-size: 13px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
         cursor: pointer;
         transition: 0.2s;
     }
@@ -200,7 +233,7 @@
         padding: 12px 16px;
         border-radius: 14px;
         font-size: 14px;
-        line-height: 1.5;
+        line-height: 1.6;
     }
     .message-row.user .bubble {
         background: var(--bubble-user);
@@ -259,26 +292,39 @@
         outline: none;
         font-size: 14px;
     }
-    #sendBtn {
-        background: var(--accent);
-        border: none;
-        color: white;
-        width: 42px;
-        height: 42px;
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 16px;
-        transition: background 0.2s;
-    }
-    #sendBtn:hover { background: var(--accent-hover); }
-    #userInput:disabled, #sendBtn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
+   #sendBtn {
+    background: linear-gradient(135deg, #2563EB, #1D4ED8);
+    border: none;
+    color: #fff;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    transition: all 0.25s ease;
+}
 
+#sendBtn:hover {
+    background: linear-gradient(135deg, #1D4ED8, #1E40AF);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.45);
+}
+
+#sendBtn:active {
+    transform: scale(0.95);
+}
+
+#userInput:disabled,
+#sendBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
     footer {
         text-align: center;
         font-size: 11px;
@@ -295,7 +341,17 @@
 <div class="app">
     <header>
         <div class="header-titles">
-            <h1>Cognix</h1>
+            <h1> 
+            <svg xmlns="http://www.w3.org/2000/svg"
+             viewBox="0 0 24 24"
+             fill="currentColor"
+             width="20"
+             height="20"
+             style="width:20px;height: 20px; vertical-align:middle;margin-right:8px;">
+            <path d="M11 1V2H7C5.34315 2 4 3.34315 4 5V8C4 10.7614 6.23858 13 9 13H15C17.7614 13 20 10.7614 20 8V5C20 3.34315 18.6569 2 17 2H13V1H11ZM6 5C6 4.44772 6.44772 4 7 4H17C17.5523 4 18 4.44772 18 5V8C18 9.65685 16.6569 11 15 11H9C7.34315 11 6 9.65685 6 8V5ZM9.5 9C10.3284 9 11 8.32843 11 7.5C11 6.67157 10.3284 6 9.5 6C8.67157 6 8 6.67157 8 7.5C8 8.32843 8.67157 9 9.5 9ZM14.5 9C15.3284 9 16 8.32843 16 7.5C16 6.67157 15.3284 6 14.5 6C13.6716 6 13 6.67157 13 7.5C13 8.32843 13.6716 9 14.5 9ZM6 22C6 18.6863 8.68629 16 12 16C15.3137 16 18 18.6863 18 22H20C20 17.5817 16.4183 14 12 14C7.58172 14 4 17.5817 4 22H6Z"/>
+        </svg>
+    Cognix
+    </h1>
             <p>A Rule-Based Chatbot</p>
         </div>
         <button class="menu-btn" id="menuBtn">&#8942;</button>
@@ -311,7 +367,16 @@
 
     <div class="chat-area" id="chatArea">
         <div class="welcome" id="welcomeScreen">
-            <div class="emoji">&#129302;</div>
+            <h2>
+    <svg xmlns="http://www.w3.org/2000/svg"
+         viewBox="0 0 24 24"
+         fill="currentColor"
+         width="44"
+         height="44"
+         style="width: 44px; height: 44px; vertical-align:middle;">
+        <path d="M11 1V2H7C5.34315 2 4 3.34315 4 5V8C4 10.7614 6.23858 13 9 13H15C17.7614 13 20 10.7614 20 8V5C20 3.34315 18.6569 2 17 2H13V1H11ZM6 5C6 4.44772 6.44772 4 7 4H17C17.5523 4 18 4.44772 18 5V8C18 9.65685 16.6569 11 15 11H9C7.34315 11 6 9.65685 6 8V5ZM9.5 9C10.3284 9 11 8.32843 11 7.5C11 6.67157 10.3284 6 9.5 6C8.67157 6 8 6.67157 8 7.5C8 8.32843 8.67157 9 9.5 9ZM14.5 9C15.3284 9 16 8.32843 16 7.5C16 6.67157 15.3284 6 14.5 6C13.6716 6 13 6.67157 13 7.5C13 8.32843 13.6716 9 14.5 9ZM6 22C6 18.6863 8.68629 16 12 16C15.3137 16 18 18.6863 18 22H20C20 17.5817 16.4183 14 12 14C7.58172 14 4 17.5817 4 22H6Z"/>
+    </svg>
+</h2>
             <h2>Welcome to Cognix</h2>
             <p>A professional rule-based chatbot that answers predefined questions using keyword matching.</p>
             <div class="suggestions">
@@ -327,7 +392,7 @@
 
     <div class="input-area">
         <input type="text" id="userInput" placeholder="Type your message..." autofocus>
-        <button id="sendBtn" title="Send">&#9658;</button>
+        <button id="sendBtn" title="Send">&#8593;</button>
     </div>
 
     <footer>&copy; Cognix | Rule-Based Chatbot Project</footer>
