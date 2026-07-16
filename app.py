@@ -1,6 +1,4 @@
 # app.py
-# Cognix - Flask server connecting the rule-based logic to the web UI
-
 from flask import Flask, render_template, request, jsonify
 from chatbot_logic import get_response
 
